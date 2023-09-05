@@ -6,7 +6,7 @@ const Composer = require("telegraf/composer");
 const WizardScene = require("telegraf/scenes/wizard");
 const Stage = require("telegraf/stage");
 
-const bot = new Telegraf("1954554074:AAE4j3DpZ2ll5OqWw-mQxkCOHd1TgEx5wwQ");
+const bot = new Telegraf("6585859940:AAFNICDaPXDicVKe2iI9fccQ0mYSLhuOyk4");
 
 // Logo
 
@@ -23,7 +23,7 @@ photoHandler.on("photo", async (ctx) => {
   );
   ctx.session.img =
     "https://api.telegram.org/file/bot" +
-    "1954554074:AAE4j3DpZ2ll5OqWw-mQxkCOHd1TgEx5wwQ" +
+    "6585859940:AAFNICDaPXDicVKe2iI9fccQ0mYSLhuOyk4" +
     "/" +
     res.file_path;
   ctx.reply(
@@ -56,7 +56,10 @@ photoHandler.on("photo", async (ctx) => {
           ohirgi_ish_maosh: ctx.session.ohirgi_ish_maosh,
           qaysi_ish: ctx.session.qaysi_ish,
           qancha_ishlaysiz: ctx.session.qancha_ishlaysiz,
+          transport_is_need: ctx.session.transport,
           about_me: ctx.session.about_me,
+          transport: ctx.session.transport,
+          vacancy: ctx.session.vacancy,
           img: ctx.session.img,
           logo: "data:image/png;base64," + logoBase64,
         },
@@ -69,7 +72,7 @@ photoHandler.on("photo", async (ctx) => {
     .create(document, options)
     .then(() => {
       ctx.telegram.sendDocument(
-        -1001237984705,
+        -1001929825010,
         { source: "./anketa/" + ctx.from.id + ".pdf" },
         {
           caption:
@@ -110,6 +113,26 @@ oilaHandler.on("callback_query", async (ctx) => {
   return ctx.wizard.next();
 });
 
+const fieldHandler = new Composer();
+fieldHandler.on("callback_query", async (ctx) => {
+  ctx.session.qaysi_ish = ctx.update.callback_query.data;
+
+  ctx.deleteMessage(ctx.callbackQuery.message.message_id).catch(() => {});
+  ctx.reply("Бизнинг корхонада канча муддат ишламокчисиз?");
+  return ctx.wizard.next();
+});
+
+const transportHandler = new Composer();
+transportHandler.on("callback_query", async (ctx) => {
+  ctx.session.transport = ctx.update.callback_query.data;
+
+  ctx.deleteMessage(ctx.callbackQuery.message.message_id).catch(() => {});
+  ctx.reply(
+    "Ваканция хақида қаердан билдингиз. (танишим орқали, телеграм, ОЛХ, танишим сизнинг заводингизда ишлайди)s"
+  );
+  return ctx.wizard.next();
+});
+
 const name = new Composer();
 name.on("text", (ctx) => {
   ctx.session.name = ctx.message.text;
@@ -120,6 +143,7 @@ name.on("text", (ctx) => {
 const sana = new Composer();
 sana.on("text", (ctx) => {
   ctx.session.birth = ctx.message.text;
+
   ctx.reply("Яшаш манзилингиз (Шахар, Туман)");
   return ctx.wizard.next();
 });
@@ -176,15 +200,18 @@ const bizda_maosh = new Composer();
 bizda_maosh.on("text", (ctx) => {
   ctx.session.bizda_maosh = ctx.message.text;
   ctx.reply(
-    "Кайси йуналишда (оддий ходим, сотув, бошкарув, хисоб китоб, техник, слесарь, сварщик,бухгалтерия) бемалол кийналмай ишлай оласиз?\n"
+    "Кайси йуналишда ишламокчисиз?",
+    Markup.inlineKeyboard([
+      [Markup.callbackButton("оддий ходим", "оддий ходим")],
+      [Markup.callbackButton("сотув", "сотув")],
+      [Markup.callbackButton("тукувчи", "тукувчи")],
+      [Markup.callbackButton("бичувчи", "бичувчи")],
+      [Markup.callbackButton("омборчи ", "омборчи ")],
+      [Markup.callbackButton("бухгалтерия", "бухгалтерия")],
+      [Markup.callbackButton("экономист", "экономист")],
+      [Markup.callbackButton("бошка...", "бошка...")],
+    ]).extra()
   );
-  return ctx.wizard.next();
-});
-
-const qaysi_ish = new Composer();
-qaysi_ish.on("text", (ctx) => {
-  ctx.session.qaysi_ish = ctx.message.text;
-  ctx.reply("Бизнинг корхонада канча муддат ишламокчисиз");
   return ctx.wizard.next();
 });
 
@@ -198,7 +225,26 @@ qancha_ishlaysiz.on("text", (ctx) => {
 const about_me = new Composer();
 about_me.on("text", (ctx) => {
   ctx.session.about_me = ctx.message.text;
-  ctx.reply("Расмингизни жўнатинг (3x4 йоки селфи тарикасида)");
+  ctx.reply(
+    "Корхонага қатнш учун сизга корхона томонидан транспорт зарур бўладими?",
+    Markup.inlineKeyboard([
+      [Markup.callbackButton("йук", "йук")],
+      [Markup.callbackButton("Ха", "Ха")],
+      [
+        Markup.callbackButton(
+          "ишни давомида аниқ бўлади",
+          "ишни давомида аниқ бўлади"
+        ),
+      ],
+    ]).extra()
+  );
+  return ctx.wizard.next();
+});
+
+const vacancy = new Composer();
+vacancy.on("text", (ctx) => {
+  ctx.session.vacancy = ctx.message.text;
+  ctx.reply("Расмингизни жўнатинг (3x4 ёки селфи тарикасида булиши шарт)");
   return ctx.wizard.next();
 });
 
@@ -219,9 +265,11 @@ const infoScene = new WizardScene(
   sabab,
   ohirgi_ish_maosh,
   bizda_maosh,
-  qaysi_ish,
+  fieldHandler,
   qancha_ishlaysiz,
   about_me,
+  transportHandler,
+  vacancy,
   photoHandler
 );
 
@@ -230,7 +278,7 @@ infoScene.start((ctx) => {
   ctx.replyWithHTML(
     "<b>Assalomu Aleykum</b> " +
       ctx.from.first_name +
-      " <b>Elit Decor HR botiga Xush Kelibsiz!</b>",
+      " <b>AmiraTextile HR botiga Xush Kelibsiz!</b>",
     Markup.inlineKeyboard([
       Markup.callbackButton("Biz haqimizda", "about"),
       Markup.callbackButton("Anketa to’ldirish", "anketa"),
@@ -252,8 +300,6 @@ const options = {
   },
 };
 
-// Rest of your code...
-
 bot.use(session());
 bot.use(stage.middleware());
 
@@ -262,7 +308,7 @@ bot.start((ctx) => {
   ctx.replyWithHTML(
     "<b>Assalomu Aleykum</b> " +
       ctx.from.first_name +
-      " <b>Elit Decor HR botiga Xush Kelibsiz!</b>",
+      " <b>AmiraTextile HR botiga Xush Kelibsiz!</b>",
     Markup.inlineKeyboard([
       Markup.callbackButton("Biz haqimizda", "about"),
       Markup.callbackButton("Anketa to’ldirish", "anketa"),
@@ -276,7 +322,7 @@ bot.action("about", async (ctx) => {
       ctx.callbackQuery.message.chat.id,
       ctx.callbackQuery.message.message_id,
       null,
-      '<a href="https://telegra.ph/Biz-haqimizda-03-19">🇺🇿Biz haqimizda</a>',
+      '<a href="https://telegra.ph/Biz-haqimizda-09-05">🇺🇿Biz haqimizda</a>',
       Markup.inlineKeyboard([
         Markup.callbackButton("Biz haqimizda", "about"),
         Markup.callbackButton("Anketa to’ldirish", "anketa"),
