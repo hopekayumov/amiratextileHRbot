@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Anketa</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap");
+
+      .container {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+      }
+
+      h1 {
+        margin: 0;
+        margin: 3px;
+        margin-left: 14px;
+      }
+
+      li {
+        margin-bottom: 12px;
+      }
+
+      .avatar {
+        border-radius: 5px;
+        margin-left: 17px;
+      }
+
+      .head_container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .logo {
+        float: right;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Anketa</h1>
+
+      <div>
+        <img class="logo" src="{{users.0.logo}}" alt="logo" width="200" />
+        <img
+          class="avatar"
+          src="{{users.0.img}}"
+          alt="User Image"
+          width="200"
+          height="200"
+        />
+        <h1>{{users.0.name}}</h1>
+      </div>
+
+      
+
+      <ul>
+        <li>Фамилия, исм-шарифи: {{users.0.name}}</li>
+        <li>Тугилган санаси: {{users.0.birth}}</li>
+        <li>Яшаш манзили: {{users.0.manzil}}</li>
+        <li>Телефон раками: {{users.0.number}}</li>
+        <li>Маълумоти: {{users.0.malumot}}</li>
+        <li>Оилавий аxволи: {{users.0.oila}}</li>
+        <li>Қайси компьютер дастурарида ишлаган: {{users.0.computer}}</li>
+        <li>Охирги маротаба каерларда ишлаган: {{users.0.ohirgi_ish}}</li>
+        <li>
+          Охирги иш жойингиз хакида маълумот: {{users.0.ohirgi_ish_malumot}}
+        </li>
+        <li>
+          Охирги иш урнингиздаги ойлик маоши: {{users.0.ohirgi_ish_maosh}}
+        </li>
+        <li>Бизда канча микдорли маошга ишламокчи: {{users.0.bizda_maosh}}</li>
+        <li>Кайси йуналишда ишламокчи: {{users.0.qaysi_ish}}</li>
+        <li>
+          Бизнинг корхонада канча муддат ишламокчи: {{users.0.qancha_ishlaysiz}}
+        </li>
+        <li>Мен хакимда: {{users.0.about_me}}</li>
+      </ul>
+    </div>
+  </body>
+</html>
