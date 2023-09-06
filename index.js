@@ -27,7 +27,7 @@ photoHandler.on("photo", async (ctx) => {
     "/" +
     res.file_path;
   ctx.reply(
-    "Аризангиз юборилди",
+    "Аризангиз юборилди. Аризангиз куриб чикилгандан сунг узимиз алокага чикамиз.",
     Markup.inlineKeyboard([
       Markup.callbackButton("Biz haqimizda", "about"),
       Markup.callbackButton("Anketa to’ldirish", "anketa"),
